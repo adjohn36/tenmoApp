@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.UserDao;
+import com.techelevator.tenmo.model.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,12 +18,11 @@ public class UserController {
     public UserController (UserDao userDao) {
         this.userDao = userDao;
     }
-    //this method gets the users balance, it responds to a GET request at "/{username}/balance
-    //the username in the path is used to find the balance
-    // TODO: getBalance hasnt been resolved yet. ERROR
-    //@GetMapping(path="/{username}/balance")
-    //public BigDecimal getBalance(@PathVariable String username) {
-    //   return userDao.getBalance(username);
-    //}
+    
+    @GetMapping(path="/{username}/balance")
+    public BigDecimal getBalance(@PathVariable String username) {
+            BigDecimal balance = userDao.getBalance(username);
+       return balance;
+    }
 
 }

@@ -78,6 +78,17 @@ public class JdbcUserDao implements UserDao {
         return true;
     }
 
+    //this method gets the users balance, it responds to a GET request at "/{username}/balance
+    //the username in the path is used to find the balance
+    // TODO: getBalance hasnt been resolved yet. ERROR
+    @Override
+    public BigDecimal getBalance(String username) {
+        String sql = "SELECT balance FROM account JOIN tenmo_user ON account.user_id = tenmo_user.user_id WHERE tenmo_user.username = ?;";
+        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, username);
+
+       return balance;
+    }
+
     private User mapRowToUser(SqlRowSet rs) {
         User user = new User();
         user.setId(rs.getLong("user_id"));
