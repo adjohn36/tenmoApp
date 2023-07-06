@@ -20,8 +20,9 @@ public class UserController {
     //this method gets the users balance, it responds to a GET request at "/{username}/balance
     //the username in the path is used to find the balance
     // TODO: getBalance hasnt been resolved yet. ERROR
-    @GetMapping(path="/{username}/balance")
-    public BigDecimal getBalance(@PathVariable String username) {
-        return userDao.getBalance(username);
-    }
+    //@GetMapping(path="/{username}/balance")
+    //public BigDecimal getBalance(@PathVariable String username) {
+    //   return userDao.getBalance(username);
+    //}
+
 }
