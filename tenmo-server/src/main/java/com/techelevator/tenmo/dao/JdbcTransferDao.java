@@ -5,9 +5,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.math.BigDecimal;
 
 @Component
 public class JdbcTransferDao implements TransferDao {
@@ -18,10 +18,9 @@ public class JdbcTransferDao implements TransferDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // TODO: MAYBE??? cache for createTransfer as stated in createUser in userdao
     @Override
-    public void createTransfer (Transfer transfer) {
-        String sql = "INSERT INTO transfer (from_user_id, to_user_id, amount, status) VALUES (?, ?, ?, ?)";
+    public void createTransfer(Transfer transfer) {
+        String sql = "INSERT INTO transfer (account_from_id, account_to_id, amount, transfer_status) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(sql, transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount(), transfer.getTransferStatusId());
     }
 
@@ -40,29 +39,28 @@ public class JdbcTransferDao implements TransferDao {
         }
         return null;
     }
-
+    // Renamed getTransfer to getTransfers so it matches the method name used in the interface and make it easier to understand.
     @Override
-    public List<Transfer> getTransferByUserId(int userId) {
+    public List<Transfer> getTransfersByUserId(int userId) {
         List<Transfer> transferListByUser = new ArrayList<>();
         String sql = "SELECT * FROM transfer WHERE account_from_id = ? OR account_to_id = ?";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userId, userId);
 
-        while(rowSet.next()) {
+        while (rowSet.next()) {
             transferListByUser.add(mapRowToTransfer(rowSet));
         }
         return transferListByUser;
     }
-
     @Override
     public Transfer requestTransfer(Transfer transferRequest) {
         String sql = "INSERT INTO transfer (account_from_id, account_to_id, amount, transfer_status) VALUES (?, ?, ?, 'Requested') RETURNING transfer_id";
-        int transferId = jdbcTemplate.queryForObject(sql, new Object[]{transferRequest.getAccountFrom(), transferRequest.getAccountTo(), transferRequest.getAmount(), transferRequest.getTransferStatusId()}, Integer.class);
+        int transferId = jdbcTemplate.queryForObject(sql, new Object[]{transferRequest.getAccountFrom(), transferRequest.getAccountTo(), transferRequest.getAmount()}, Integer.class);
         transferRequest.setTransferId(transferId);
         return transferRequest;
     }
 
     @Override
-    public List<Transfer> getPendingTransfer(int userId) {
+    public List<Transfer> getPendingTransfers(int userId) {
         List<Transfer> transfers = new ArrayList<>();
         String sql = "SELECT * FROM transfer WHERE (account_from_id = ? OR account_to_id = ?) AND transfer_status = 'Pending'";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userId, userId);
