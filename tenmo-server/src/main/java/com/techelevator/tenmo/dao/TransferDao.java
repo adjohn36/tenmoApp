@@ -31,30 +31,5 @@ public interface TransferDao {
 
 }
 
-//TODO: create accountDao and paste different methods into accountDao and transferDao
-//    BigDecimal getBalance(String username);
-//
-//    //New methods i just put in
-//    List<Transfer> getPendingTransfers(int userId);
-//
-//    void updateAccountBalance(int accountId, BigDecimal newBalance);
-//
-//    @Override
-//    public BigDecimal getBalance(String username) {
-//        String sql = "SELECT balance FROM account JOIN tenmo_user ON account.user_id = tenmo_user.user_id WHERE tenmo_user.username = ?;";
-//        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, username);
-//        return balance;
-//    }
-//
-//
-//
-//    // Update the account balance in the account table
-//    @Override
-//    public void updateAccountBalance(int accountId, BigDecimal newBalance) {
-//        String sql = "UPDATE account SET balance = ? WHERE account_id = ?";
-//        jdbcTemplate.update(sql, newBalance, accountId);
-//    }
-//
-//    // Update the transfer status in the transfer table
-//    @Override
+
 
