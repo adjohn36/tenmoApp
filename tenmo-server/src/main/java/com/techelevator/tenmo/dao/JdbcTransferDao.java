@@ -69,6 +69,22 @@ public class JdbcTransferDao implements TransferDao {
         }
         return transfers;
     }
+    // Retrieve pending transfers associated with a specific user from the transfer table
+//    @Override
+//    public List<Transfer> getPendingTransfers(int userId) {
+//        List<Transfer> transfers = new ArrayList<>();
+//        String sql = "SELECT * FROM transfer WHERE (account_from_id = ? OR account_to_id = ?) AND transfer_status = 'Pending'";
+//        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userId, userId);
+//        while (rowSet.next()) {
+//            transfers.add(mapRowToTransfer(rowSet));
+//        }
+//        return transfers;
+//    }
+
+    //    public void updateTransferStatus(int transferId, String status) {
+//        String sql = "UPDATE transfer SET transfer_status = ? WHERE transfer_id = ?";
+//        jdbcTemplate.update(sql, status, transferId);
+//    }
 
     private Transfer mapRowToTransfer(SqlRowSet rowSet) {
         Transfer transfer = new Transfer();
