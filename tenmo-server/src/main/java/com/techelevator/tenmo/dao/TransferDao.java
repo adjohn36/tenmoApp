@@ -6,15 +6,21 @@ import java.util.List;
 
 public interface TransferDao {
 
-    void createTransfer (Transfer transfer);
+    // Create a transfer in the transfer table
+    void createTransfer(Transfer transfer);
 
+    // Update the status of a transfer in the transfer table
     void updateTransferStatus(int transferId, String status);
 
+    // Retrieve a transfer by its ID from the transfer table
     Transfer getTransferById(int transferId);
 
+    // Retrieve transfers associated with a specific user from the transfer table
     List<Transfer> getTransfersByUserId(int userId);
 
+    // Retrieve pending transfers associated with a specific user from the transfer table
     List<Transfer> getPendingTransfers(int userId);
 
-    Transfer requestTransfer (Transfer transferRequest);
+    // Create a transfer request in the transfer table
+    Transfer requestTransfer(Transfer transferRequest);
 }
