@@ -17,14 +17,4 @@ public interface UserDao {
     int findIdByUsername(String username);
 
     boolean create(String username, String password);
-
-    BigDecimal getBalance(String username);
-
-    //New methods i just put in
-    List<Transfer> getPendingTransfers(int userId);
-
-    void updateAccountBalance(int accountId, BigDecimal newBalance);
-
-    void updateTransferStatus(int transferId, String status);
-
 }

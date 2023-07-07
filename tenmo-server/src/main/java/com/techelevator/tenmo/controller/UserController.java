@@ -20,10 +20,10 @@ public class UserController {
         this.userDao = userDao;
     }
 
-    @GetMapping(path="/{username}/balance")
-    public BigDecimal getBalance(@PathVariable String username) {
-            BigDecimal balance = userDao.getBalance(username);
-       return balance;
-    }
+//    @GetMapping(path="/{username}/balance")
+//    public BigDecimal getBalance(@PathVariable String username) {
+//            BigDecimal balance = userDao.getBalance(username);
+//       return balance;
+//    }
 
 }
