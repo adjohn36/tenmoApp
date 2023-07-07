@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 
 @RestController
 @RequestMapping(path="/users")
@@ -18,7 +19,7 @@ public class UserController {
     public UserController (UserDao userDao) {
         this.userDao = userDao;
     }
-    
+
     @GetMapping(path="/{username}/balance")
     public BigDecimal getBalance(@PathVariable String username) {
             BigDecimal balance = userDao.getBalance(username);
