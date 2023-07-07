@@ -39,12 +39,33 @@ public class TransferController {
 
     // Send a transfer
     @RequestMapping(path = "/transfers/send", method = RequestMethod.POST)
-    public Transfer sendTransfer(@RequestBody Transfer transfer, Principal principal) {
+    public Transfer sendTransfer(@RequestBody Transfer transfer, Principal principal, User accountTo) {
         User fromUser = userDao.findByUsername(principal.getName());
+        User toUser = userDao.findByUsername(accountTo.getUsername());
         int fromUserId = fromUser.getId().intValue();
+        // Check if sender and receiver are the same user
+        if (fromUser.getId().equals(toUser.getId())) {
+            throw new IllegalArgumentException("Cannot send money to yourself.");
+        }
+        // Check if sender has sufficient balance
+        BigDecimal senderBalance = userDao.getBalance(fromUser.getUsername());
+        BigDecimal transferAmount = transfer.getAmount();
+        if (transferAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Invalid transfer amount. Amount must be greater than zero.");
+        }
+        // TODO: test to see if compareTo method works.  If not try .subtract method.
+        if (senderBalance.compareTo(transferAmount) < 0) {
+            throw new IllegalArgumentException("Insufficient balance. You cannot send more than your account balance.");
+        }
+        // Update sender's and receiver's account balances
+        BigDecimal senderNewBalance = senderBalance.subtract(transferAmount);
+        BigDecimal receiverNewBalance = userDao.getBalance(toUser.getUsername()).add(transferAmount);
+        userDao.updateAccountBalance(fromUser.getId().intValue(), senderNewBalance);
+        userDao.updateAccountBalance(toUser.getId().intValue(), receiverNewBalance);
         transfer.setAccountFrom(fromUserId);
         transfer.setTransferStatusId("Approved");
         transferDao.createTransfer(transfer);
+
         return transfer;
     }
 
