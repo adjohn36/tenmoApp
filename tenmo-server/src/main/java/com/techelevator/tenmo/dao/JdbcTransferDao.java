@@ -21,13 +21,13 @@ public class JdbcTransferDao implements TransferDao {
     @Override
     public void createTransfer(Transfer transfer) {
         String sql = "INSERT INTO transfer (account_from_id, account_to_id, amount, transfer_status) VALUES (?, ?, ?, ?)";
-        jdbcTemplate.update(sql, transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount(), transfer.getTransferStatusId());
+        jdbcTemplate.update(sql, transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount(), transfer.getTransferStatus());
     }
 
     @Override
-    public void updateTransferStatus(int transferId, String status) {
+    public void updateTransferStatus(int transferId, String tranferStatus) {
         String sql = "UPDATE transfer SET transfer_status = ? WHERE transfer_id = ?";
-        jdbcTemplate.update(sql, status, transferId);
+        jdbcTemplate.update(sql, tranferStatus, transferId);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class JdbcTransferDao implements TransferDao {
         transferRequest.setTransferId(transferId);
         return transferRequest;
     }
-
+    // Retrieve pending transfers associated with a specific user from the transfer table
     @Override
     public List<Transfer> getPendingTransfers(int userId) {
         List<Transfer> transfers = new ArrayList<>();
@@ -69,27 +69,12 @@ public class JdbcTransferDao implements TransferDao {
         }
         return transfers;
     }
-    // Retrieve pending transfers associated with a specific user from the transfer table
-//    @Override
-//    public List<Transfer> getPendingTransfers(int userId) {
-//        List<Transfer> transfers = new ArrayList<>();
-//        String sql = "SELECT * FROM transfer WHERE (account_from_id = ? OR account_to_id = ?) AND transfer_status = 'Pending'";
-//        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userId, userId);
-//        while (rowSet.next()) {
-//            transfers.add(mapRowToTransfer(rowSet));
-//        }
-//        return transfers;
-//    }
-
-    //    public void updateTransferStatus(int transferId, String status) {
-//        String sql = "UPDATE transfer SET transfer_status = ? WHERE transfer_id = ?";
-//        jdbcTemplate.update(sql, status, transferId);
-//    }
 
     private Transfer mapRowToTransfer(SqlRowSet rowSet) {
         Transfer transfer = new Transfer();
         transfer.setTransferId(rowSet.getInt("transfer_id"));
-        transfer.setTransferStatusId(rowSet.getString("transfer_status"));
+        transfer.setTransferStatus(rowSet.getString("transfer_status"));
+        transfer.setTransferType(rowSet.getString("transfer_type"));
         transfer.setAccountFrom(rowSet.getInt("account_from_id"));
         transfer.setAccountTo(rowSet.getInt("account_to_id"));
         transfer.setAmount(rowSet.getBigDecimal("amount"));

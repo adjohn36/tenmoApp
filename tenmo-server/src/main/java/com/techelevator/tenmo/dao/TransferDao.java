@@ -13,7 +13,7 @@ public interface TransferDao {
     void createTransfer(Transfer transfer);
 
     // Update the status of a transfer in the transfer table
-    void updateTransferStatus(int transferId, String status);
+    void updateTransferStatus(int transferId, String transferStatus);
 
     // Retrieve a transfer by its ID from the transfer table
     Transfer getTransferById(int transferId);

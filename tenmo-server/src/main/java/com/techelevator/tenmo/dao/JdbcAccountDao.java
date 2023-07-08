@@ -34,6 +34,7 @@ public class JdbcAccountDao implements AccountDao{
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userId);
         if (rowSet.next()) {
             return mapRowToAccount(rowSet);
+
         }
         return null;
     }

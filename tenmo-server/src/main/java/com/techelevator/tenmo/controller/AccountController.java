@@ -20,14 +20,14 @@ public class AccountController {
     public AccountController(AccountDao accountDao){
         this.accountDao = accountDao;
     }
-
+    // -- works
     @GetMapping(path = "/balance")
     public BigDecimal getBalance(Principal principal){
         BigDecimal balance = accountDao.getBalance(principal.getName());
         return balance;
     }
 
-   // @PutMapping(path = "/balance")
+    @PutMapping(path = "/balance")
 
 //    public BigDecimal updateAccountBalance(Principal principal, @RequestParam BigDecimal balance) {
 //        String username = principal.getName();
@@ -37,14 +37,14 @@ public class AccountController {
 //        accountDao.updateAccountBalance(accountId, balance);
 //        return accountDao.getBalance(accountId);
 //    }
-
-    @GetMapping
-    public Account getAccountByUserId(int userId){
+    // 404 not found with userId entered
+    @GetMapping(path = "/{userId}")
+    public Account getAccountByUserId(@PathVariable("userId") int userId){
         Account account = accountDao.getAccountByUserId(userId);
         return account;
     }
-
-    @GetMapping
+    // 404 not found
+    @GetMapping(path = "/all")
     public List<Account> getAllAccounts(){
         return accountDao.getAllAccounts();
     }
