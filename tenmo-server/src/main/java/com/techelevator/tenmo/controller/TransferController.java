@@ -40,7 +40,7 @@ public class TransferController {
     public Transfer getTransferById(@PathVariable int transferId) {
         return transferDao.getTransferById(transferId);
     }
-
+//TODO: Need tested
     // 401 Unauthorized
     // Send a transfer
     @RequestMapping(path = "/transfers/send", method = RequestMethod.POST)
@@ -71,8 +71,9 @@ public class TransferController {
         transfer.setTransferStatus("Approved");
         transferDao.createTransfer(transfer);
 
-        return transfer;
+        return transferDao.getTransferById(transfer.getTransferId());
     }
+
     // 500 Internal Server Error
     // Request a transfer
     @RequestMapping(path = "/transfers/request", method = RequestMethod.POST)
