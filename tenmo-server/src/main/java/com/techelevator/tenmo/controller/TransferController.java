@@ -69,7 +69,7 @@ public class TransferController {
         accountDao.updateAccountBalance(toUser.getId().intValue(), receiverNewBalance);
         transfer.setAccountFrom(fromUserId);
         transfer.setTransferStatus("Approved");
-        transferDao.createTransfer(transfer);
+        transferDao.sendTransfer(transfer);
 
         return transferDao.getTransferById(transfer.getTransferId());
     }

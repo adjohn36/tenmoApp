@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface TransferDao {
 
-    // Create a transfer in the transfer table
-    void createTransfer(Transfer transfer);
+    // Send a transfer
+    Transfer sendTransfer(Transfer sendTransfer);
 
-    // Update the status of a transfer in the transfer table
+        // Update the status of a transfer in the transfer table
     void updateTransferStatus(int transferId, String transferStatus);
 
     // Retrieve a transfer by its ID from the transfer table

@@ -19,9 +19,11 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public void createTransfer(Transfer transfer) {
-        String sql = "INSERT INTO transfer (account_from_id, account_to_id, amount, transfer_status) VALUES (?, ?, ?, ?)";
-        jdbcTemplate.update(sql, transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount(), transfer.getTransferStatus());
+    public Transfer sendTransfer(Transfer sendTransfer) {
+        String sql = "INSERT INTO transfer (account_from_id, account_to_id, amount, transfer_status, transfer_type) VALUES (?, ?, ?, 'Approved', 'Sent') RETURNING transfer_id";
+        int sendTransferId = jdbcTemplate.update(sql, sendTransfer.getAccountFrom(), sendTransfer.getAccountTo(), sendTransfer.getAmount(), sendTransfer.getTransferStatus(), sendTransfer.getTransferType());
+        sendTransfer.setTransferId(sendTransferId);
+        return sendTransfer;
     }
 
     @Override
@@ -53,8 +55,8 @@ public class JdbcTransferDao implements TransferDao {
     }
     @Override
     public Transfer requestTransfer(Transfer transferRequest) {
-        String sql = "INSERT INTO transfer (account_from_id, account_to_id, amount, transfer_status) VALUES (?, ?, ?, 'Pending') RETURNING transfer_id";
-        int transferId = jdbcTemplate.queryForObject(sql, Integer.class, transferRequest.getAccountFrom(), transferRequest.getAccountTo(), transferRequest.getAmount());
+        String sql = "INSERT INTO transfer (account_from_id, account_to_id, amount, transfer_status, transfer_type) VALUES (?, ?, ?, 'Pending', 'Requested') RETURNING transfer_id";
+        int transferId = jdbcTemplate.queryForObject(sql, Integer.class, transferRequest.getAccountFrom(), transferRequest.getAccountTo(), transferRequest.getAmount(), transferRequest.getTransferStatus(), transferRequest.getTransferType());
         transferRequest.setTransferId(transferId);
         return transferRequest;
     }
