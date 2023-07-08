@@ -43,16 +43,18 @@ public class JdbcTransferDao implements TransferDao {
     }
     // Renamed getTransfer to getTransfers so it matches the method name used in the interface and make it easier to understand.
     @Override
-    public List<Transfer> getTransfersByUserId(int userId) {
+    public List<Transfer> getTransfersByAccountId(int accountId) {
         List<Transfer> transferListByUser = new ArrayList<>();
         String sql = "SELECT * FROM transfer WHERE account_from_id = ? OR account_to_id = ?";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userId, userId);
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, accountId, accountId);
 
         while (rowSet.next()) {
             transferListByUser.add(mapRowToTransfer(rowSet));
         }
         return transferListByUser;
     }
+
+
     @Override
     public Transfer requestTransfer(Transfer transferRequest) {
         String sql = "INSERT INTO transfer (account_from_id, account_to_id, amount, transfer_status, transfer_type) VALUES (?, ?, ?, 'Pending', 'Requested') RETURNING transfer_id";

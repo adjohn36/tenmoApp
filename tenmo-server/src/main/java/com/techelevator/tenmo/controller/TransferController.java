@@ -26,13 +26,13 @@ public class TransferController {
         this.accountDao = accountDao;
     }
 
-    // 200 -- works - no transfers to view
+    // 200 -- not working correctly, returns no transfers for the current account when transfers exist
     // Get all transfers for the current user
     @RequestMapping(path = "/transfers", method = RequestMethod.GET)
     public List<Transfer> getAllTransfers(Principal principal) {
         User user = userDao.findByUsername(principal.getName());
         int userId = user.getId().intValue();
-        return transferDao.getTransfersByUserId(userId);
+        return transferDao.getTransfersByAccountId(userId);
     }
     // 200 -- works
     // Get a specific transfer by its ID
@@ -92,13 +92,13 @@ public class TransferController {
         int userId = user.getId().intValue();
         return transferDao.getPendingTransfers(userId);
     }
-    // not tested - no pending transfers
+    // 200 -- works
     // Approve a pending transfer
     @RequestMapping(path = "/transfers/approve/{transferId}", method = RequestMethod.PUT)
     public void approveTransfer(@PathVariable int transferId) {
         transferDao.updateTransferStatus(transferId, "Approved");
     }
-    // not tested - no pending transfers
+    // 200 -- works
     // Reject a pending transfer
     @RequestMapping(path = "/transfers/reject/{transferId}", method = RequestMethod.PUT)
     public void rejectTransfer(@PathVariable int transferId) {

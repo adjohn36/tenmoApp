@@ -19,7 +19,9 @@ public interface TransferDao {
     Transfer getTransferById(int transferId);
 
     // Retrieve transfers associated with a specific user from the transfer table
-    List<Transfer> getTransfersByUserId(int userId);
+    List<Transfer> getTransfersByAccountId(int accountId);
+
+
 
     // Retrieve pending transfers associated with a specific user from the transfer table
     List<Transfer> getPendingTransfers(int userId);
