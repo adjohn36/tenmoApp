@@ -34,7 +34,7 @@ public class TransferController {
         int userId = user.getId().intValue();
         return transferDao.getTransfersByUserId(userId);
     }
-    // not tested - no transfers
+    // 200 -- works
     // Get a specific transfer by its ID
     @RequestMapping(path = "/transfers/{transferId}", method = RequestMethod.GET)
     public Transfer getTransferById(@PathVariable int transferId) {
