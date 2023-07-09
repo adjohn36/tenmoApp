@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import java.math.BigDecimal;
@@ -28,6 +29,8 @@ public interface TransferDao {
 
     // Create a transfer request in the transfer table
     Transfer requestTransfer(Transfer transferRequest);
+
+
 
 
 
