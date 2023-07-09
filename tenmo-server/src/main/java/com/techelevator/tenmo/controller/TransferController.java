@@ -77,13 +77,12 @@ public class TransferController {
         return transferDao.getTransferById(transfer.getTransferId());
     }
 
-    // 500 Internal Server Error
-    // Request a transfer
+    // working
     @PostMapping(path = "/transfers/request")
     public Transfer requestTransfer(@RequestBody Transfer transfer, Principal principal) {
         int toUserId = userDao.findIdByUsername(principal.getName());
         int toUserAccountId = accountDao.getAccountIdByUserId(toUserId);
-        int fromUserAccountID = accountDao.getAccountIdByAccountFromId();
+        int fromUserAccountID = accountDao.getAccountIdByAccountFromId(toUserAccountId);
         transfer.setAccountFrom(fromUserAccountID);
         transfer.setAccountTo(toUserAccountId);
         transfer.setTransferStatus("Pending");
