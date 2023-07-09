@@ -6,6 +6,7 @@ import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,11 +79,11 @@ public class TransferController {
 
     // 500 Internal Server Error
     // Request a transfer
-    @RequestMapping(path = "/transfers/request", method = RequestMethod.POST)
-    public Transfer requestTransfer(@RequestBody Transfer transfer, Principal principal, int accountId) {
+    @PostMapping(path = "/transfers/request")
+    public Transfer requestTransfer(@RequestBody Transfer transfer, Principal principal) {
         int toUserId = userDao.findIdByUsername(principal.getName());
         int toUserAccountId = accountDao.getAccountIdByUserId(toUserId);
-        int fromUserAccountID = accountId;
+        int fromUserAccountID = accountDao.getAccountIdByAccountFromId();
         transfer.setAccountFrom(fromUserAccountID);
         transfer.setAccountTo(toUserAccountId);
         transfer.setTransferStatus("Pending");

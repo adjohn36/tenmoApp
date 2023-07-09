@@ -56,6 +56,12 @@ public class JdbcAccountDao implements AccountDao{
         return accounts;
     }
 
+    public int getAccountIdByAccountFromId(){
+        String sql = "SELECT account_id FROM account JOIN transfer ON account.account_id = transfer.account_from_id WHERE account_from_id = ?;";
+        int accountId = jdbcTemplate.queryForObject(sql, int.class);
+        return accountId;
+    }
+
 
 
     private Account mapRowToAccount(SqlRowSet rowSet){
