@@ -18,4 +18,6 @@ public interface AccountDao {
     int getAccountIdByUserId(int userId);
 
     List<Account> getAllAccounts();
+
+
 }

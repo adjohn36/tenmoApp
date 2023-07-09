@@ -6,6 +6,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class JdbcTransferDao implements TransferDao {
     @Override
     public Transfer requestTransfer(Transfer transferRequest) {
         String sql = "INSERT INTO transfer (account_from_id, account_to_id, amount, transfer_status, transfer_type) VALUES (?, ?, ?, 'Pending', 'Requested') RETURNING transfer_id";
-        int transferId = jdbcTemplate.queryForObject(sql, Integer.class, transferRequest.getAccountFrom(), transferRequest.getAccountTo(), transferRequest.getAmount(), transferRequest.getTransferStatus(), transferRequest.getTransferType());
+        int transferId = jdbcTemplate.queryForObject(sql, Integer.class, transferRequest.getAccountFrom(), transferRequest.getAccountTo(), transferRequest.getAmount());
         transferRequest.setTransferId(transferId);
         return transferRequest;
     }
