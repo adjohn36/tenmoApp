@@ -23,7 +23,7 @@ public class JdbcTransferDao implements TransferDao {
     @Override
     public Transfer sendTransfer(Transfer sendTransfer) {
         String sql = "INSERT INTO transfer (account_from_id, account_to_id, amount, transfer_status, transfer_type) VALUES (?, ?, ?, 'Approved', 'Sent') RETURNING transfer_id";
-        int sendTransferId = jdbcTemplate.update(sql, sendTransfer.getAccountFrom(), sendTransfer.getAccountTo(), sendTransfer.getAmount(), sendTransfer.getTransferStatus(), sendTransfer.getTransferType());
+        int sendTransferId = jdbcTemplate.update(sql, sendTransfer.getAccountFrom(), sendTransfer.getAccountTo(), sendTransfer.getAmount());
         sendTransfer.setTransferId(sendTransferId);
         return sendTransfer;
     }
