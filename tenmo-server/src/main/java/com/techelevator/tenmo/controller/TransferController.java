@@ -27,13 +27,13 @@ public class TransferController {
         this.accountDao = accountDao;
     }
 
-    // 200 -- not working correctly, returns no transfers for the current account when transfers exist
+    // 200 -- works
     // Get all transfers for the current user
     @RequestMapping(path = "/transfers", method = RequestMethod.GET)
     public List<Transfer> getAllTransfers(Principal principal) {
-        User user = userDao.findByUsername(principal.getName());
-        int userId = user.getId().intValue();
-        return transferDao.getTransfersByAccountId(userId);
+        int userId = userDao.findIdByUsername(principal.getName());
+        int accountId = accountDao.getAccountIdByUserId(userId);
+        return transferDao.getTransfersByAccountId(accountId);
     }
     // 200 -- works
     // Get a specific transfer by its ID
@@ -42,7 +42,7 @@ public class TransferController {
         return transferDao.getTransferById(transferId);
     }
 //TODO: Need tested
-    // 401 Unauthorized
+    // 401 not authenticated
     // Send a transfer
     @RequestMapping(path = "/transfers/send", method = RequestMethod.POST)
     public Transfer sendTransfer(@RequestBody Transfer transfer, Principal principal, User accountTo) {
