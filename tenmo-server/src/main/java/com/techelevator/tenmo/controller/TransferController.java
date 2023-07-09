@@ -84,7 +84,7 @@ public class TransferController {
         transfer.setTransferStatus("Pending");
         return transferDao.requestTransfer(transfer);
     }
-    // 200 -- works - no pending transfers to view
+    // 200 -- returns no transfers even when some are pending
     // Get all pending transfers for the current user
     @RequestMapping(path = "/transfers/pending", method = RequestMethod.GET)
     public List<Transfer> getPendingTransfers(Principal principal) {
