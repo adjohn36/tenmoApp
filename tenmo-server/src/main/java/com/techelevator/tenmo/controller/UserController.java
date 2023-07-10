@@ -18,5 +18,9 @@ public class UserController {
         this.userDao = userDao;
     }
 
-    
+    @RequestMapping(method = RequestMethod.GET)
+    public List<User> usersToTransfer (){
+        List users = userDao.findAll();
+        return users;
+    }
 }

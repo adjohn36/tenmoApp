@@ -79,10 +79,11 @@ public class TransferController {
 
     // working
     @PostMapping(path = "/transfers/request")
-    public Transfer requestTransfer(@RequestBody Transfer transfer, Principal principal) {
-        int toUserId = userDao.findIdByUsername(principal.getName());
-        int toUserAccountId = accountDao.getAccountIdByUserId(toUserId);
-        int fromUserAccountID = accountDao.getAccountIdByAccountFromId(toUserAccountId);
+    public Transfer requestTransfer(@RequestBody Transfer transfer, Principal principal, User userFromId) {
+        int toUsername = userDao.findIdByUsername(principal.getName());
+        int toUserAccountId = accountDao.getAccountIdByUserId(toUsername);
+        int fromUsername = userDao.findIdByUsername(userFromId.getUsername());
+        int fromUserAccountID = accountDao.getAccountIdByAccountFromId(fromUsername);
         transfer.setAccountFrom(fromUserAccountID);
         transfer.setAccountTo(toUserAccountId);
         transfer.setTransferStatus("Pending");

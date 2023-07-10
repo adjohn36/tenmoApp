@@ -24,10 +24,26 @@ public class JdbcAccountDao implements AccountDao{
         return balance;
     }
 @Override
-        public void updateAccountBalance(int accountId, BigDecimal newBalance) {
+    public void updateAccountBalance(int accountId, BigDecimal newBalance) {
         String sql = "UPDATE account SET balance = ? WHERE account_id = ?";
         jdbcTemplate.update(sql, newBalance, accountId);
     }
+    @Override
+    public BigDecimal addToAccountBalance(BigDecimal addedAmount, int accountId){
+        Account account = getAccountByAccountId(accountId);
+        BigDecimal newBalance = account.getBalance().add(addedAmount);
+        String sql = "UPDATE account SET balance = ? WHERE account_id = ?";
+        jdbcTemplate.update(sql, newBalance, accountId);
+        return account.getBalance();
+    }
+    public BigDecimal subtractFromAccountBalance(BigDecimal subtractedAmount, int accountId){
+        Account account = getAccountByAccountId(accountId);
+        BigDecimal newBalance = account.getBalance().subtract(subtractedAmount);
+        String sql = "UPDATE account SET balance = ? WHERE account_id = ?";
+        jdbcTemplate.update(sql, newBalance, accountId);
+        return account.getBalance();
+    }
+
     @Override
     public Account getAccountByUserId(int userId) {
         String sql = "SELECT * FROM account WHERE user_id = ?";
@@ -35,8 +51,18 @@ public class JdbcAccountDao implements AccountDao{
         if (rowSet.next()) {
             return mapRowToAccount(rowSet);
 
+        }else {
+            return null;
         }
-        return null;
+    }
+    public Account getAccountByAccountId(int accountId) {
+        String sql = "SELECT * FROM account WHERE account_id = ?";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, accountId);
+        if (rowSet.next()){
+            return mapRowToAccount(rowSet);
+        }else{
+            return null;
+        }
     }
 
     public int getAccountIdByUserId(int userId) {
