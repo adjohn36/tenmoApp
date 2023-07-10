@@ -42,53 +42,73 @@ public class TransferController {
     public Transfer getTransferById(@PathVariable int transferId) {
         return transferDao.getTransferById(transferId);
     }
-//TODO: Need tested
-    // 401 not authenticated
-    // Send a transfer
-    @RequestMapping(path = "/transfers/send", method = RequestMethod.POST)
-    public Transfer sendTransfer(@RequestBody Transfer transfer, Principal principal, User accountTo) {
-        int fromUserId = userDao.findIdByUsername(principal.getName());
-        int fromUserAccountId = accountDao.getAccountIdByUserId(fromUserId);
-        int toUserId = userDao.findIdByUsername(accountTo.getUsername());
-        int toUserAccountId = accountDao.getAccountIdByUserId(toUserId);
+
+    //TODO: Test it out
+    @PostMapping(path = "/transfers/send")
+    public Transfer sendTransfer(@RequestBody Transfer transfer, Principal principal) {
+        int fromUserId = transfer.getAccountFrom();   // Retrieve the user ID of the sender
+        int toUserId = transfer.getAccountTo();       // Retrieve the user ID of the receiver
         // Check if sender and receiver are the same user
-        if (fromUserAccountId == toUserAccountId) {
+        if (fromUserId == toUserId) {
             throw new IllegalArgumentException("Cannot send money to yourself.");
         }
-        // Check if sender has sufficient balance
-        BigDecimal senderBalance = accountDao.getBalance(principal.getName());
+        // Check if transfer amount is valid
         BigDecimal transferAmount = transfer.getAmount();
         if (transferAmount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Invalid transfer amount. Amount must be greater than zero.");
         }
-        // TODO: test to see if compareTo method works.  If not try .subtract method.
-        if (senderBalance.intValue() < 0) {
+        // Retrieve the sender and receiver accounts
+        Account senderAccount = accountDao.getAccountByUserId(fromUserId);
+        Account receiverAccount = accountDao.getAccountByUserId(toUserId);
+
+        // Check if sender has sufficient balance
+        BigDecimal senderBalance = senderAccount.getBalance();
+        if (senderBalance.compareTo(transferAmount) < 0) {
             throw new IllegalArgumentException("Insufficient balance. You cannot send more than your account balance.");
         }
         // Update sender's and receiver's account balances
         BigDecimal senderNewBalance = senderBalance.subtract(transferAmount);
-        BigDecimal receiverNewBalance = accountDao.getBalance(accountTo.getUsername()).add(transferAmount);
-        accountDao.updateAccountBalance(fromUserAccountId, senderNewBalance);
-        accountDao.updateAccountBalance(toUserAccountId, receiverNewBalance);
-        transfer.setAccountFrom(fromUserId);
-        transfer.setTransferStatus("Approved");
-        transferDao.sendTransfer(transfer);
+        BigDecimal receiverNewBalance = receiverAccount.getBalance().add(transferAmount);
 
-        return transferDao.getTransferById(transfer.getTransferId());
+        // Update the sender's account balance and update the receiver's account balance
+        accountDao.updateAccountBalance(senderAccount.getAccountId(), senderNewBalance);
+        accountDao.updateAccountBalance(receiverAccount.getAccountId(), receiverNewBalance);
+
+        // Set the transfer status to "Approved"
+        transfer.setTransferStatus("Approved");
+
+        // Perform the send transfer operation
+        Transfer sentTransfer = transferDao.sendTransfer(transfer);
+
+        // Add the transfer to the transfer lists of both the sender and receiver users
+        userDao.addTransferForUser(fromUserId, sentTransfer);
+        userDao.addTransferForUser(toUserId, sentTransfer);
+
+        return sentTransfer;
     }
 
-    // working
+    //todo: working now.
     @PostMapping(path = "/transfers/request")
-    public Transfer requestTransfer(@RequestBody Transfer transfer, Principal principal, User userFromId) {
-        int toUsername = userDao.findIdByUsername(principal.getName());
-        int toUserAccountId = accountDao.getAccountIdByUserId(toUsername);
-        int fromUsername = userDao.findIdByUsername(userFromId.getUsername());
-        int fromUserAccountID = accountDao.getAccountIdByAccountFromId(fromUsername);
-        transfer.setAccountFrom(fromUserAccountID);
-        transfer.setAccountTo(toUserAccountId);
+    public Transfer requestTransfer(@RequestBody Transfer transfer, Principal principal) {
+        int fromAccountId = transfer.getAccountFrom();   // Retrieve the account ID of the user making the request
+        int toAccountId = transfer.getAccountTo();       // Retrieve the account ID of the user receiving the request
+
+        // Check if sender and receiver are the same account
+        if (fromAccountId == toAccountId) {
+            throw new IllegalArgumentException("Cannot request money to yourself.");
+        }
+
+        // Check if transfer amount is valid
+        BigDecimal transferAmount = transfer.getAmount();
+        if (transferAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Invalid transfer amount. Amount must be greater than zero.");
+        }
+
+        // Perform the request transfer operation and return the transfer object
         transfer.setTransferStatus("Pending");
         return transferDao.requestTransfer(transfer);
     }
+
     // 200 -- works, returns pending transfer for accountId
     // Get all pending transfers for the current user
     @RequestMapping(path = "/transfers/pending", method = RequestMethod.GET)

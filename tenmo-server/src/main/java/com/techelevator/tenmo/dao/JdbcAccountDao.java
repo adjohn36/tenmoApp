@@ -5,7 +5,6 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,21 +26,6 @@ public class JdbcAccountDao implements AccountDao{
     public void updateAccountBalance(int accountId, BigDecimal newBalance) {
         String sql = "UPDATE account SET balance = ? WHERE account_id = ?";
         jdbcTemplate.update(sql, newBalance, accountId);
-    }
-    @Override
-    public BigDecimal addToAccountBalance(BigDecimal addedAmount, int accountId){
-        Account account = getAccountByAccountId(accountId);
-        BigDecimal newBalance = account.getBalance().add(addedAmount);
-        String sql = "UPDATE account SET balance = ? WHERE account_id = ?";
-        jdbcTemplate.update(sql, newBalance, accountId);
-        return account.getBalance();
-    }
-    public BigDecimal subtractFromAccountBalance(BigDecimal subtractedAmount, int accountId){
-        Account account = getAccountByAccountId(accountId);
-        BigDecimal newBalance = account.getBalance().subtract(subtractedAmount);
-        String sql = "UPDATE account SET balance = ? WHERE account_id = ?";
-        jdbcTemplate.update(sql, newBalance, accountId);
-        return account.getBalance();
     }
 
     @Override
@@ -81,13 +65,6 @@ public class JdbcAccountDao implements AccountDao{
         }
         return accounts;
     }
-
-    public int getAccountIdByAccountFromId(int accountFromId){
-        String sql = "SELECT account_id FROM account JOIN transfer ON account.account_id = transfer.account_from_id WHERE account_from_id = ?;";
-        int accountId = jdbcTemplate.queryForObject(sql, int.class, accountFromId);
-        return accountId;
-    }
-
 
 
     private Account mapRowToAccount(SqlRowSet rowSet){

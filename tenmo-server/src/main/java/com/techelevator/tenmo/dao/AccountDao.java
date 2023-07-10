@@ -13,10 +13,6 @@ public interface AccountDao {
 
     void updateAccountBalance(int accountId, BigDecimal newBalance);
 
-    BigDecimal addToAccountBalance(BigDecimal addedAmount, int accountId);
-
-    BigDecimal subtractFromAccountBalance(BigDecimal subtractedAmount, int accountId);
-
     Account getAccountByUserId(int userId);
 
     Account getAccountByAccountId(int AccountId);
@@ -24,8 +20,6 @@ public interface AccountDao {
     int getAccountIdByUserId(int userId);
 
     List<Account> getAllAccounts();
-
-    int getAccountIdByAccountFromId(int accountFromId);
 
 
 }

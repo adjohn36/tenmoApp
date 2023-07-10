@@ -18,5 +18,6 @@ public interface UserDao {
 
     boolean create(String username, String password);
 
+    void addTransferForUser(int userId, Transfer transfer);
 
 }
